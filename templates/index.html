@@ -25,8 +25,8 @@
                 document.getElementById('result').innerText = speechResult;
                 document.getElementById('status').innerText = "Recognition ended.";
 
-                // Optionally, send the result to the backend
-                // sendToBackend(speechResult);
+                // Send the result to the backend
+                sendToBackend(speechResult);
             };
 
             recognition.onerror = function(event) {

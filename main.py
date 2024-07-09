@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import speech_recognition as sr
 
 app = Flask(__name__)
 
@@ -12,8 +11,8 @@ def speech_to_text():
     data = request.get_json()
     recognized_text = data.get('text', '')
 
-    # Process the recognized text as needed
-    # For example, save it to a database or perform additional processing
+    # Process the recognized text as needed (db operations)
+    print("Recognized Text: " + recognized_text)
 
     return jsonify({'status': 'success', 'text': recognized_text})
 
