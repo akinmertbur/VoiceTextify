@@ -9,23 +9,13 @@ def index():
 
 @app.route('/speech-to-text', methods=['POST'])
 def speech_to_text():
-    recognizer = sr.Recognizer()
-    audio_file = request.files['file']
+    data = request.get_json()
+    recognized_text = data.get('text', '')
 
-    # Save the file temporarily to process it
-    audio_path = "temp_audio.wav"
-    audio_file.save(audio_path)
+    # Process the recognized text as needed
+    # For example, save it to a database or perform additional processing
 
-    with sr.AudioFile(audio_path) as source:
-        audio = recognizer.record(source)
-        try:
-            # Specify the language as Turkish
-            text = recognizer.recognize_google(audio, language="tr-TR")
-            return jsonify({'text': text})
-        except sr.UnknownValueError:
-            return jsonify({'error': 'Speech was unintelligible'})
-        except sr.RequestError:
-            return jsonify({'error': 'Could not request results from Google Speech Recognition service'})
+    return jsonify({'status': 'success', 'text': recognized_text})
 
 if __name__ == '__main__':
     app.run(debug=True)
