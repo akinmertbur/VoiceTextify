@@ -109,7 +109,6 @@ VoiceTextify/
 - numpy
 - scikit-learn
 - joblib
-- gtts
 
 ## Contributing
 
