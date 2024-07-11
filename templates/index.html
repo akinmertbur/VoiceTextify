@@ -2,57 +2,33 @@
 <html>
 <head>
     <title>Speech to Text</title>
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
     <h1>Speech to Text</h1>
-    <button onclick="startRecognition()">Start Recognition</button>
+    <input type="file" id="audioFile" accept="audio/wav">
+    <button onclick="convertSpeechToText()">Convert to Text</button>
     <p id="result"></p>
     <p id="status"></p>
 
     <script>
-        function startRecognition() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'tr-TR'; // Set the language to Turkish
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+        async function convertSpeechToText() {
+            const fileInput = document.getElementById('audioFile');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
 
-            recognition.onstart = function() {
-                document.getElementById('status').innerText = "Recognition started...";
-            };
-
-            recognition.onresult = function(event) {
-                const speechResult = event.results[0][0].transcript;
-                document.getElementById('result').innerText = speechResult;
-                document.getElementById('status').innerText = "Recognition ended.";
-
-                // Send the result to the backend
-                sendToBackend(speechResult);
-            };
-
-            recognition.onerror = function(event) {
-                document.getElementById('status').innerText = 'Error occurred in recognition: ' + event.error;
-            };
-
-            recognition.onend = function() {
-                document.getElementById('status').innerText = "Recognition ended.";
-            };
-
-            recognition.start();
-        }
-
-        // Function to send recognized speech text to the backend
-        function sendToBackend(text) {
-            fetch('/speech-to-text', {
+            const response = await fetch('/speech-to-text', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ text: text })
-            }).then(response => response.json())
-              .then(data => {
-                  console.log(data);
-                  // Handle response data
-              });
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.text) {
+                document.getElementById('result').innerText = result.text;
+            } else {
+                document.getElementById('result').innerText = result.error;
+            }
         }
     </script>
 </body>
